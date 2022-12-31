@@ -21,6 +21,12 @@ def summarize_transcript(result):
         st.text_area("Summarized text\n" + out)
         summarized_text.append(out)
 
+    # Join the elements of the summarized_text list into a single string
+    summarized_text_str = '\n'.join(summarized_text)
+
+    return summarized_text_str
+
+
 
 # Create the main Streamlit app
 def main():
@@ -37,7 +43,7 @@ def main():
         # video_id = video_url.split("=")[1]
         YouTubeTranscriptApi.get_transcript(video_id)
         transcript = YouTubeTranscriptApi.get_transcript(video_id)
-        transcript[0:5]
+        # transcript[0:5]
     except requests.exceptions.RequestException as e:
         st.write("Error retrieving transcript:", e)
         return
