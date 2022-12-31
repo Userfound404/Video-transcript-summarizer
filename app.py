@@ -13,10 +13,10 @@ def summarize_transcript(transcript, max_length=512):
     return summary
 
 # Create the main Streamlit app
-def main():
-    st.title("Video Transcript Summarizer")
 
-    # Retrieve the transcript for the video
+def main():
+    
+    st.title("Video Transcript Summarizer")
     video_url = st.text_input("Enter the URL of the video:")
     try:
         video_id = video_url.split("=")[1]
