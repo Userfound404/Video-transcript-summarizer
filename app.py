@@ -2,31 +2,14 @@ import streamlit as st
 import requests
 from transformers import pipeline
 import tensorflow as tf
-# from IPython.display import YouTubeVideo
 from youtube_transcript_api import YouTubeTranscriptApi
 
+
 # Create a function to summarize the transcript
-def summarize_transcript(result):
-    summarizer = pipeline('summarization')
-    num_iters = int(len(result) / 1000)
-    summarized_text = []
-    for i in range(0, num_iters + 1):
-        start = 0
-        start = i * 1000
-        end = (i + 1) * 1000
-        st.text_area("input text \n" + result[start:end])
-        out = summarizer(result[start:end])
-        out = out[0]
-        out = out['summary_text']
-        st.text_area("Summarized text\n" + out)
-        summarized_text.append(out)
-
-    # Join the elements of the summarized_text list into a single string
-    summarized_text_str = '\n'.join(summarized_text)
-
-    return summarized_text_str
-
-
+def summarize_transcript(transcript, max_length=512):
+    summarizer = pipeline("summarization")
+    summary = summarizer(transcript, max_length=max_length)[0]["summary_text"]
+    return summary
 
 # Create the main Streamlit app
 def main():
@@ -34,27 +17,24 @@ def main():
 
     # Retrieve the transcript for the video
     video_url = st.text_input("Enter the URL of the video:")
-    video_parts = video_url.split("=")
+    video_id = video_url.split("=")[1]
     try:
-        if len(video_parts) < 2:
-            st.write("Error: Invalid video URL")
-            return
-        video_id = video_parts[1]
         # video_id = video_url.split("=")[1]
         YouTubeTranscriptApi.get_transcript(video_id)
         transcript = YouTubeTranscriptApi.get_transcript(video_id)
-        # transcript[0:5]
     except requests.exceptions.RequestException as e:
         st.write("Error retrieving transcript:", e)
         return
 
-    # Display the transcript and a summary of it
+    # Display the video preview and transcript
+    st.markdown("**Video Preview:**")
+    st.video(video_url)
     st.markdown("**Transcript:**")
     st.text_area("transcript", transcript, height=400)
+
+    # Display the summary of the transcript
     st.markdown("**Summary:**")
     st.text_area("summary", summarize_transcript(transcript))
 
-
-# Run the Streamlit app
 if __name__ == "__main__":
     main()
