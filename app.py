@@ -16,7 +16,7 @@ def summarize_transcript(transcript, max_length=512):
     # Summarize each chunk separately
     summaries = []
     for chunk in chunks:
-        summary = summarizer(chunk, max_length=max_length)[0]["summary_text"]
+        summary = summarizer(chunk)[0]["summary_text"]
         summaries.append(summary)
 
     # Join the summaries back together
