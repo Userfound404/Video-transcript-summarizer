@@ -44,3 +44,6 @@ def main():
     # Display the summary of the transcript
     st.markdown("**Summary:**")
     st.text_area("summary", summarize_transcript(transcript, max_length=max_length))
+
+if __name__ == "__main__":
+    main()
