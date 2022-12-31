@@ -24,8 +24,6 @@ def summarize_video(url):
         summarized_text.append(out)
     return " ".join(summarized_text)
 
-# Create the main Streamlit app
-def main():
     st.title("YouTube Video Summarizer")
     url = st.text_input("Enter a YouTube URL:")
     if st.button("Summarize"):
@@ -42,6 +40,3 @@ def main():
     # Display the summary of the transcript
     st.markdown("**Summary:**")
     st.text_area("summary", summarize_transcript(transcript))
-
-if __name__ == "__main__":
-    main()
