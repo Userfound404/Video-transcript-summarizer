@@ -24,19 +24,19 @@ def summarize_video(url):
         summarized_text.append(out)
     return " ".join(summarized_text)
 
-    st.title("YouTube Video Summarizer")
-    url = st.text_input("Enter a YouTube URL:")
-    if st.button("Summarize"):
-        summary = summarize_video(url)
-        st.success(summary)
+st.title("YouTube Video Summarizer")
+url = st.text_input("Enter a YouTube URL:")
+if st.button("Summarize"):
+    summary = summarize_video(url)
+    st.success(summary)
 
     # Display the video preview and transcript
-    st.markdown("**Video Preview:**")
-    st.video(video_url)
-    st.markdown("**Transcript:**")
-    transcript_text = ' '.join([t['text'] for t in transcript])
-    st.text_area("transcript", transcript_text, height=400)
+st.markdown("**Video Preview:**")
+st.video(video_url)
+st.markdown("**Transcript:**")
+transcript_text = ' '.join([t['text'] for t in transcript])
+st.text_area("transcript", transcript_text, height=400)
 
-    # Display the summary of the transcript
-    st.markdown("**Summary:**")
-    st.text_area("summary", summarize_transcript(transcript))
+ # Display the summary of the transcript
+st.markdown("**Summary:**")
+st.text_area("summary", summarize_transcript(transcript))
