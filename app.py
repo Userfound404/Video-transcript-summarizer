@@ -32,7 +32,7 @@ if st.button("Summarize"):
 
     # Display the video preview and transcript
 st.markdown("**Video Preview:**")
-st.video(video_url)
+st.video(url)
 st.markdown("**Transcript:**")
 transcript_text = ' '.join([t['text'] for t in transcript])
 st.text_area("transcript", transcript_text, height=400)
