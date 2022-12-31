@@ -8,6 +8,10 @@ youtube_video = st.text_input("Enter YouTube video URL:")
 
 # Extract video ID and retrieve transcript
 video_id = youtube_video.split("=")[1]
+if len(split_url) >= 2:
+  video_id = split_url[1]
+else:
+  st.write("Error: Invalid YouTube video URL")
 transcript = YouTubeTranscriptApi.get_transcript(video_id)
 
 # Concatenate transcript text into single string
