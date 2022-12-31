@@ -6,7 +6,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 
 # Create a function to summarize the transcript
 def summarize_transcript(transcript, buffer_length=50):
-    summarizer = pipeline("summarization")
+    summarizer = pipeline("summarization",model='t5-base')
     transcript_text = ' '.join([t['text'] for t in transcript])
     max_length = len(transcript_text) + buffer_length
     # Divide the transcript into shorter chunks
