@@ -7,9 +7,21 @@ from youtube_transcript_api import YouTubeTranscriptApi
 
 # Create a function to summarize the transcript
 def summarize_transcript(transcript, max_length=512):
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn-dailymail")
     transcript_text = ' '.join([t['text'] for t in transcript])
-    summarizer = pipeline("summarization")
-    summary = summarizer(transcript_text)[0]["summary_text"]
+    # Divide the transcript into shorter chunks
+    chunk_size = max_length - 2  # Leave some space for the summarizer to add punctuation
+    chunks = [transcript_text[i:i + chunk_size] for i in range(0, len(transcript_text), chunk_size)]
+
+    # Summarize each chunk separately
+    summaries = []
+    for chunk in chunks:
+        summary = summarizer(chunk, max_length=max_length)[0]["summary_text"]
+        summaries.append(summary)
+
+    # Join the summaries back together
+    summary = ' '.join(summaries)
+
     return summary
 
 # Create the main Streamlit app
@@ -40,3 +52,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
