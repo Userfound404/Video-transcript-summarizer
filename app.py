@@ -7,8 +7,9 @@ from youtube_transcript_api import YouTubeTranscriptApi
 
 # Create a function to summarize the transcript
 def summarize_transcript(transcript, max_length=512):
+    transcript_text = ' '.join([t['text'] for t in transcript])
     summarizer = pipeline("summarization")
-    summary = summarizer(transcript)[0]["summary_text"]
+    summary = summarizer(transcript_text)[0]["summary_text"]
     return summary
 
 # Create the main Streamlit app
