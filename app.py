@@ -4,39 +4,53 @@ from transformers import pipeline
 import tensorflow as tf
 from youtube_transcript_api import YouTubeTranscriptApi
 
-# Create a function to summarize the transcript
-def summarize_video(url):
-    video_id = url.split("=")[1]
-    transcript = YouTubeTranscriptApi.get_transcript(video_id)
-    result = ""
-    for i in transcript:
-        result += ' ' + i['text']
-    summarizer = pipeline('summarization')
-    num_iters = int(len(result)/1000)
-    summarized_text = []
-    for i in range(0, num_iters + 1):
-        start = 0
-        start = i * 1000
-        end = (i + 1) * 1000
-        out = summarizer(result[start:end])
-        out = out[0]
-        out = out['summary_text']
-        summarized_text.append(out)
-    return " ".join(summarized_text)
 
-st.title("YouTube Video Summarizer")
-url = st.text_input("Enter a YouTube URL:")
-if st.button("Summarize"):
-    summary = summarize_video(url)
-    st.success(summary)
+# Create a function to summarize the transcript
+def summarize_transcript(transcript, max_length=512):
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn-dailymail")
+    transcript_text = ' '.join([t['text'] for t in transcript])
+    # Divide the transcript into shorter chunks
+    chunk_size = max_length - 2  # Leave some space for the summarizer to add punctuation
+    chunks = [transcript_text[i:i + chunk_size] for i in range(0, len(transcript_text), chunk_size)]
+
+    # Summarize each chunk separately
+    summaries = []
+    for chunk in chunks:
+        summary = summarizer(chunk, max_length=max_length)[0]["summary_text"]
+        summaries.append(summary)
+
+    # Join the summaries back together
+    summary = ' '.join(summaries)
+
+    return summary
+
+# Create the main Streamlit app
+def main():
+    st.title("Video Transcript Summarizer")
+
+    # Retrieve the transcript for the video
+    video_url = st.text_input("Enter the URL of the video:")
+    video_id = video_url.split("=")[1]
+    try:
+        # video_id = video_url.split("=")[1]
+        YouTubeTranscriptApi.get_transcript(video_id)
+        transcript = YouTubeTranscriptApi.get_transcript(video_id)
+    except requests.exceptions.RequestException as e:
+        st.write("Error retrieving transcript:", e)
+        return
 
     # Display the video preview and transcript
-st.markdown("**Video Preview:**")
-st.video(url)
-st.markdown("**Transcript:**")
-transcript_text = ' '.join([t['text'] for t in transcript])
-st.text_area("transcript", transcript_text, height=400)
+    st.markdown("**Video Preview:**")
+    st.video(video_url)
+    st.markdown("**Transcript:**")
+    transcript_text = ' '.join([t['text'] for t in transcript])
+    st.text_area("transcript", transcript_text, height=400)
 
- # Display the summary of the transcript
-st.markdown("**Summary:**")
-st.text_area("summary", summarize_transcript(transcript))
+    # Display the summary of the transcript
+    st.markdown("**Summary:**")
+    st.text_area("summary", summarize_transcript(transcript))
+
+if __name__ == "__main__":
+    main()
+
+
