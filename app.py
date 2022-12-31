@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 from transformers import pipeline
-# import tensorflow as tf
+import tensorflow as tf
 # from IPython.display import YouTubeVideo
 from youtube_transcript_api import YouTubeTranscriptApi
 
@@ -29,14 +29,15 @@ def main():
     # Retrieve the transcript for the video
     video_url = st.text_input("Enter the URL of the video:")
     video_parts = video_url.split("=")
-    if len(video_parts) < 2:
-        st.write("Error: Invalid video URL")
-        return
-    video_id = video_parts[1]
     try:
+        if len(video_parts) < 2:
+            st.write("Error: Invalid video URL")
+            return
+        video_id = video_parts[1]
         # video_id = video_url.split("=")[1]
         YouTubeTranscriptApi.get_transcript(video_id)
         transcript = YouTubeTranscriptApi.get_transcript(video_id)
+        transcript[0:5]
     except requests.exceptions.RequestException as e:
         st.write("Error retrieving transcript:", e)
         return
